@@ -7,6 +7,15 @@ class Despesa {
         this.descricao = descricao
         this.valor = valor
     }
+
+    validarDados() {
+        for (let i in this) {
+            if (this[i] == undefined || this[i] == '' || this[i] == null) {
+                return false
+            }
+        }
+        return true
+    }
 }
 
 class Bd {
@@ -14,11 +23,11 @@ class Bd {
     constructor() {
         let id = localStorage.getItem('id')
 
-        if(id === null) {
+        if (id === null) {
             localStorage.setItem('id', 0)
         }
     }
-    getProxId(){
+    getProxId() {
         let proxId = localStorage.getItem('id')
         return parseInt(proxId) + 1
     }
@@ -50,5 +59,23 @@ function cadastrarDespesa() {
         valor.value
     )
 
-    bd.gravar(despesa)
+    if (despesa.validarDados()) {
+        document.getElementById('tituloModal').innerHTML = 'Registro inserido com sucesso!'
+        document.getElementById('corpoModal').innerHTML = 'A despesa foi cadastrada com sucesso.'
+        document.getElementById('topoModal').className = 'text-success modal-header'
+        document.getElementById('botaoModal').className = 'btn-success btn'
+        document.getElementById('botaoModal').innerHTML = 'Voltar'
+
+        bd.gravar(despesa)
+        
+        $('#alertaRegistro').modal('show')
+    } else {
+        document.getElementById('tituloModal').innerHTML = 'Erro na gravação!'
+        document.getElementById('corpoModal').innerHTML = 'Existem campos obrigatórios que não foram preenchidos.'
+        document.getElementById('topoModal').className = 'text-danger modal-header'
+        document.getElementById('botaoModal').className = 'btn-danger btn'
+        document.getElementById('botaoModal').innerHTML = 'Voltar e corrigir'
+
+        $('#alertaRegistro').modal('show')
+    }
 }
